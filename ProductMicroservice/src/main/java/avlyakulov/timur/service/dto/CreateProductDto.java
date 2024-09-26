@@ -1,4 +1,4 @@
-package avlyakulov.timur.event;
+package avlyakulov.timur.service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,9 +11,7 @@ import java.math.BigDecimal;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductCreatedEvent {
-
-    private String productId;
+public class CreateProductDto {
 
     private String title;
 

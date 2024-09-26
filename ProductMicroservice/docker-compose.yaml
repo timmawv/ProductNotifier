@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  kafka-api:
+    container_name: kafka
+    image: bashj79/kafka-kraft:latest
+    ports:
+      - "9092:9092"
+    healthcheck:
+      test: ["CMD", "nc", "-vz", "localhost", "9092"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  #docker exec -it --user=root kafka-ui /bin/sh
+  #apk add socat
+  #socat tcp-listen:9092,fork tcp:host.docker.internal:9092
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - "8083:8080"
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'true'
+    depends_on:
+      kafka-api:
+        condition: service_healthy
