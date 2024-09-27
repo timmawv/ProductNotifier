@@ -27,22 +27,22 @@ public class ProductCreatedEventHandler {
     public void handle(ProductCreatedEvent productCreatedEvent) {
         log.info("Received event: {}", productCreatedEvent.getTitle());
 
-        String url = "http://localhost:8090/response/500";
-        try {
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
-
-            if (response.getStatusCode().value() == HttpStatus.OK.value())
-                log.info("Received response: {}", response.getBody());
-
-        } catch (ResourceAccessException e) {
-            log.error(e.getMessage());
-            throw new RetryableException(e);
-        } catch (HttpServerErrorException e) {
-            log.error(e.getMessage());
-            throw new NonRetryableException(e);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new NonRetryableException(e);
-        }
+        String url = "http://localhost:8090/response/200";
+//        try {
+//            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
+//
+//            if (response.getStatusCode().value() == HttpStatus.OK.value())
+//                log.info("Received response: {}", response.getBody());
+//
+//        } catch (ResourceAccessException e) {
+//            log.error(e.getMessage());
+//            throw new RetryableException(e);
+//        } catch (HttpServerErrorException e) {
+//            log.error(e.getMessage());
+//            throw new NonRetryableException(e);
+//        } catch (Exception e) {
+//            log.error(e.getMessage());
+//            throw new NonRetryableException(e);
+//        }
     }
 }

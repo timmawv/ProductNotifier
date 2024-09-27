@@ -73,9 +73,9 @@ public class KafkaConfig {
     @Bean
     NewTopic createTopic() {
         return TopicBuilder.name("product-created-events-topic")
-                .partitions(1)
-                .replicas(1)
-                .configs(Map.of("min.isync.replicas", "0"))//минимальное количество серверов которое находится в синхроне с нами
+                .partitions(3)
+                .replicas(3)
+                .configs(Map.of("min.isync.replicas", "2"))//минимальное количество серверов которое находится в синхроне с нами
                 .build();
     }
 }
