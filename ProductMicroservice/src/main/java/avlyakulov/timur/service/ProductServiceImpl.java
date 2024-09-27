@@ -5,6 +5,7 @@ import avlyakulov.timur.exception.AppException;
 import avlyakulov.timur.service.dto.CreateProductDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -27,7 +28,15 @@ public class ProductServiceImpl implements ProductService {
                 productId, createProductDto.getTitle(),
                 createProductDto.getPrice(), createProductDto.getQuantity());
 
-        SendResult<String, ProductCreatedEvent> result = sendEvent(productId, productCreatedEvent);
+        ProducerRecord<String, ProductCreatedEvent> record = new ProducerRecord<>(
+                "product-created-events-topic",
+                productId,
+                productCreatedEvent
+        );
+
+        record.headers().add("messageId", UUID.randomUUID().toString().getBytes());
+
+        SendResult<String, ProductCreatedEvent> result = sendEvent(record);
 
         log.info("Topic: {}", result.getRecordMetadata().topic());
         log.info("Partition: {}", result.getRecordMetadata().partition());
@@ -38,10 +47,9 @@ public class ProductServiceImpl implements ProductService {
         return productId;
     }
 
-    private SendResult<String, ProductCreatedEvent> sendEvent(String productId, ProductCreatedEvent productCreatedEvent) {
+    private SendResult<String, ProductCreatedEvent> sendEvent(ProducerRecord<String, ProductCreatedEvent> record) {
         try {
-            return kafkaTemplate
-                    .send("product-created-events-topic", productId, productCreatedEvent).get();
+            return kafkaTemplate.send(record).get();
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new AppException("Internal server error", HttpStatus.INTERNAL_SERVER_ERROR);
